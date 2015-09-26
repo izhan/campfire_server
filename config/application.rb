@@ -22,5 +22,9 @@ module CampfireServer
 
     # Do not swallow errors in after_commit/after_rollback callbacks.
     config.active_record.raise_in_transactional_callbacks = true
+
+    # TODO a hack
+    # https://github.com/rails-api/rails-api/issues/73
+    config.middleware.use Rack::Session::Cookie
   end
 end
