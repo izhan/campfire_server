@@ -51,6 +51,9 @@ GEM
     erubis (2.7.0)
     faraday (0.9.0)
       multipart-post (>= 1.2, < 3)
+    figaro (0.7.0)
+      bundler (~> 1.0)
+      rails (>= 3, < 5)
     globalid (0.3.6)
       activesupport (>= 4.1.0)
     hashie (3.3.2)
@@ -147,6 +150,7 @@ PLATFORMS
 DEPENDENCIES
   devise
   doorkeeper
+  figaro
   omniauth-google-oauth2
   pg
   rails (= 4.2.0)

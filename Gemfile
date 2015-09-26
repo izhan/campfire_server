@@ -18,6 +18,7 @@ end
 gem 'omniauth-google-oauth2'
 gem 'devise'
 gem 'doorkeeper'
+gem 'figaro'
 
 # To use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
