@@ -5,6 +5,8 @@ gem 'rails', '4.2.0'
 
 gem 'rails-api'
 
+gem 'figaro'
+
 group :development do
   gem 'spring'
   gem 'sqlite3'
