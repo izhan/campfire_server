@@ -7,6 +7,8 @@ gem 'rails-api'
 
 gem 'figaro'
 gem 'google-api-client'
+gem 'rack-cors', :require => 'rack/cors'
+
 
 group :development do
   gem 'spring'
