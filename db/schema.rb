@@ -11,9 +11,17 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150926184336) do
+ActiveRecord::Schema.define(version: 20150926215855) do
 
 # Could not dump table "calendar_lists" because of following NoMethodError
 #   undefined method `[]' for nil:NilClass
+
+  create_table "users", force: :cascade do |t|
+    t.string   "email"
+    t.string   "access_token"
+    t.string   "uid"
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
+  end
 
 end

@@ -6,6 +6,7 @@ gem 'rails', '4.2.0'
 gem 'rails-api'
 
 gem 'figaro'
+gem 'google-api-client'
 
 group :development do
   gem 'spring'
