@@ -5,10 +5,10 @@ gem 'rails', '4.2.0'
 
 gem 'rails-api'
 
-gem 'spring', :group => :development
-
-
-gem 'sqlite3'
+group :development do
+  gem 'spring'
+  gem 'sqlite3'
+end
 
 group :production do
   gem 'pg'
