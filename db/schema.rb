@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150927153710) do
+ActiveRecord::Schema.define(version: 20150927154145) do
 
   create_table "calendar_lists", force: :cascade do |t|
     t.text     "json_data"
@@ -28,6 +28,7 @@ ActiveRecord::Schema.define(version: 20150927153710) do
     t.datetime "created_at",       null: false
     t.datetime "updated_at",       null: false
     t.string   "gcal_id"
+    t.string   "sync_token"
   end
 
   add_index "calendars", ["calendar_list_id"], name: "index_calendars_on_calendar_list_id"
