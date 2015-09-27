@@ -1,5 +1,4 @@
 require 'google/api_client/client_secrets'
-require 'google/api_client'
 
 # TODO this should not be here
 CLIENT_SECRETS_FILE = Rails.root.join('config', 'oauth', 'gplus_client_secret.json')
