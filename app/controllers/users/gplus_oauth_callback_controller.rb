@@ -5,6 +5,7 @@ class Users::GplusOauthCallbackController < ApplicationController
     puts "in callback"
 
     if params[:code]
+      puts params[:code]
       client_secrets = get_api_client()
       authorization = client_secrets.to_authorization
       authorization.scope = 'https://www.googleapis.com/auth/calendar'
@@ -51,7 +52,7 @@ class Users::GplusOauthCallbackController < ApplicationController
           javascript_origins: Figaro.env.javascript_origins.split(" ")
         }
       }
-      Google::APIClient::ClientSecrets.load(CLIENT_SECRETS_FILE)
+      Google::APIClient::ClientSecrets.new(data)
     end
 
     # https://github.com/googleplus/gplus-verifytoken-ruby/blob/master/verify.rb
