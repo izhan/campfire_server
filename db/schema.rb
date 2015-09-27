@@ -13,8 +13,14 @@
 
 ActiveRecord::Schema.define(version: 20150927045145) do
 
-# Could not dump table "calendar_lists" because of following NoMethodError
-#   undefined method `[]' for nil:NilClass
+  create_table "calendar_lists", force: :cascade do |t|
+    t.text     "json_data"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer  "user_id"
+  end
+
+  add_index "calendar_lists", ["user_id"], name: "index_calendar_lists_on_user_id"
 
   create_table "users", force: :cascade do |t|
     t.string   "email"
