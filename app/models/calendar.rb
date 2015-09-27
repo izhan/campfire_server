@@ -10,6 +10,7 @@ class Calendar < ActiveRecord::Base
       initial_sync(access_token)
     end
 
+    self.save
     self
   end
 
