@@ -1,15 +1,13 @@
 require 'google/api_client'
 
 class CalendarList < ActiveRecord::Base
-  before_create :initial_sync
+  after_create :sync
   belongs_to :user
   has_many :calendars
 
-  serialize :json_data
-
   private
 
-    def initial_sync
+    def sync
       puts "initial sync"
       client = Google::APIClient.new(
         application_name: "Campfire",
@@ -26,5 +24,13 @@ class CalendarList < ActiveRecord::Base
       # calendars could paginate too, though we'll assume that
       # the calendarlist isnt that long
       self.json_data = result.data.items.to_json
+
+      result.data.items.each do |cal|
+        # allow to reuse calendar if already present
+        db_cal = Calendar.find_or_create_by(gcal_id: cal["id"])
+        self.calendars << db_cal
+      end
+
+      self.save
     end
 end
