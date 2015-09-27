@@ -7,6 +7,8 @@ gem 'rails-api'
 
 gem 'figaro'
 gem 'google-api-client'
+gem 'google-id-token'
+
 gem 'rack-cors', :require => 'rack/cors'
 
 
