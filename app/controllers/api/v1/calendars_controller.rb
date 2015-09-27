@@ -19,7 +19,7 @@ class Api::V1::CalendarsController < BaseApiController
 
     # make sure user actually owns the calendar
     def verify_owner(id)
-      unless does_own_calendar?
+      unless does_own_calendar?(id)
         render json: 'unauthorized calendar access', status: 401
       end
     end
