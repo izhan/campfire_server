@@ -3,12 +3,13 @@ class Calendar < ActiveRecord::Base
 
   validates :gcal_id, presence: true, uniqueness: true
 
-  def create_from_token(access_token, gcal_id, params={})
-    calendar = Calendar.new(params)
-    calendar.json_data = fetch_json(access_token, gcal_id)
-    calendar.gcal_id = gcal_id
-    calendar.save
-    calendar
+  def sync!(access_token)
+    if self.json_data
+      return # TODO resync with server using sync token
+    else
+      self.json_data = fetch_json(access_token, gcal_id)
+      self.save
+    end
   end
 
   private
@@ -23,8 +24,6 @@ class Calendar < ActiveRecord::Base
       events = []
       page_token = nil
 
-      response = fetch_json_by_page(client, page_token)
-      events += response.data.items.to_json
       loop do
         response = client.execute(
           :api_method => service.events.list,
@@ -38,7 +37,8 @@ class Calendar < ActiveRecord::Base
           :headers => {'Content-Type' => 'application/json'}
         )
         events += response.data.items.to_json
-        break unless response.data.page_token
+        page_token = response.data.page_token
+        break unless page_token
       end
 
       events.to_json
