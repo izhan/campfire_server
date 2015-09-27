@@ -4,16 +4,21 @@ class Calendar < ActiveRecord::Base
   validates :gcal_id, presence: true, uniqueness: true
 
   def sync!(access_token)
-    if self.json_data
+    if self.sync_token
       return # TODO resync with server using sync token
     else
-      self.json_data = fetch_json(access_token, gcal_id)
-      self.save
+      initial_sync(access_token)
     end
+
+    self
+  end
+
+  def synced?
+    self.sync_token
   end
 
   private
-    def fetch_json(access_token, gcal_id)
+    def initial_sync(access_token)
       puts "initial calendar sync"
       client = Google::APIClient.new(
         application_name: "Campfire",
@@ -23,12 +28,13 @@ class Calendar < ActiveRecord::Base
       service = client.discovered_api('calendar', 'v3')
       events = []
       page_token = nil
+      sync_token = nil
 
       loop do
         response = client.execute(
           :api_method => service.events.list,
           :parameters => {
-            calendarId: gcal_id,
+            calendarId: self.gcal_id,
             timeMin: (Time.now - 6.month).iso8601,
             timeMax: (Time.now() + 6.month).iso8601,
             pageToken: page_token,
@@ -36,11 +42,13 @@ class Calendar < ActiveRecord::Base
           },
           :headers => {'Content-Type' => 'application/json'}
         )
-        events += response.data.items.to_json
-        page_token = response.data.page_token
+        events += response.data.items
+        page_token = response.data.next_page_token
+        sync_token = response.data.next_sync_token
         break unless page_token
       end
 
-      events.to_json
+      self.json_data = events.to_json
+      self.sync_token = sync_token
     end
 end
