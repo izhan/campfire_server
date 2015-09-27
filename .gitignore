@@ -18,6 +18,3 @@
 
 # Ignore application configuration
 /config/application.yml
-
-# ignore oauth secrets
-/config/oauth/gplus_client_secret.json
