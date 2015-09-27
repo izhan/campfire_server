@@ -1,4 +1,4 @@
-class Api::V1::CalendarListController < BaseApiController
+class Api::V1::CalendarListsController < BaseApiController
   before_action :authenticate_request, only: [:index]
 
   def index

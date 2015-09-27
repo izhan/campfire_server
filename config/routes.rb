@@ -1,7 +1,7 @@
 Rails.application.routes.draw do
   namespace :api do
     namespace :v1 do
-      resources :calendar_list, only: [:index]
+      resources :calendar_lists, only: [:index]
     end
   end
   
