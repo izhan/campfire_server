@@ -6,11 +6,9 @@ CLIENT_SECRETS_FILE = Rails.root.join('config', 'oauth', 'gplus_client_secret.js
 
 class Users::GplusOauthCallbackController < ApplicationController
   def callback
-    puts "in callbaddsckd"
-    puts params
-    puts params[:code]
+    puts "in callback"
+
     if params[:code]
-      puts "within if"
       client_secrets = Google::APIClient::ClientSecrets.load(CLIENT_SECRETS_FILE)
       authorization = client_secrets.to_authorization
       authorization.scope = 'https://www.googleapis.com/auth/calendar'
@@ -19,21 +17,26 @@ class Users::GplusOauthCallbackController < ApplicationController
       authorization.fetch_access_token!
 
       access_token = authorization.access_token
-      puts "SDFJLSDFLJSDF"
 
       token = decode_id_token(authorization.id_token, client_secrets.client_id)
       render json: 'oauth auth failed', status: 401 if not token
 
-      uid = token["id"]
+      uid = token["sub"]
       email = token["email"]
-      user = User.find_or_create_by(uid: uid)
+      user = User.find_or_create_by(uid: uid) do |user|
+        user.email = email
+        user.access_token = access_token
+      end
 
       # using Fred Guest's stateless API strategy
       # http://fredguest.com/2015/03/06/building-a-stateless-rails-api-with-react-and-twitter-oauth/
+      # adversaries cannot forge a jwt without the secret.  jwt are 
+      # signatures, not encryptions, meaning jwt are signed non-sensitive data 
+      # unique to a user (in this case, google plus id)
       jwt = JWT.encode({uid: user.uid, exp: 1.day.from_now.to_i}, Rails.application.secrets.secret_key_base)
       
-      # is this okay?
-      render json: { jwt: jwt }
+      # TODO should dry this up a bit by using a serializer 
+      render json: { jwt: jwt, user: user }
     else
       render json: 'oauth auth failed', status: 401
     end
