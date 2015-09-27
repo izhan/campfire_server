@@ -24,6 +24,6 @@ class CalendarList < ActiveRecord::Base
 
       # calendars could paginate too, though we'll assume that
       # the calendarlist isnt that long
-      self.json_data = result.data.items
+      self.json_data = result.data.items.to_json
     end
 end
