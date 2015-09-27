@@ -1,5 +1,7 @@
 class CalendarListController < BaseApiController
+  before_action :authenticate_request, only: [:index]
+
   def index
-    render json: { hello: "world" }
+    @current_user
   end
 end
