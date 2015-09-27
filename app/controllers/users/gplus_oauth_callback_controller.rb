@@ -1,14 +1,11 @@
 require 'google/api_client/client_secrets'
 
-# TODO this should not be here
-CLIENT_SECRETS_FILE = Rails.root.join('config', 'oauth', 'gplus_client_secret.json')
-
 class Users::GplusOauthCallbackController < ApplicationController
   def callback
     puts "in callback"
 
     if params[:code]
-      client_secrets = Google::APIClient::ClientSecrets.load(CLIENT_SECRETS_FILE)
+      client_secrets = get_api_client()
       authorization = client_secrets.to_authorization
       authorization.scope = 'https://www.googleapis.com/auth/calendar'
       authorization.code = params[:code]
@@ -42,6 +39,20 @@ class Users::GplusOauthCallbackController < ApplicationController
   end
 
   private
+
+    def get_api_client
+      data = {
+        "web" => {
+          client_id: Figaro.env.client_id,
+          auth_uri: Figaro.env.auth_uri,
+          token_uri: Figaro.env.token_uri,
+          auth_provider_x509_cert_url: Figaro.env.auth_provider_x509_cert_url,
+          client_secret: Figaro.env.client_secret,
+          javascript_origins: Figaro.env.javascript_origins.split(" ")
+        }
+      }
+      Google::APIClient::ClientSecrets.load(CLIENT_SECRETS_FILE)
+    end
 
     # https://github.com/googleplus/gplus-verifytoken-ruby/blob/master/verify.rb
     def decode_id_token(id_token, client_id)
