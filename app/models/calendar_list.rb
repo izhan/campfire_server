@@ -3,6 +3,7 @@ require 'google/api_client'
 class CalendarList < ActiveRecord::Base
   before_create :initial_sync
   belongs_to :user
+  has_many :calendars
 
   serialize :json_data
 

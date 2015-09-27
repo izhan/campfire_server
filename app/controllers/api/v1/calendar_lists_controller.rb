@@ -1,5 +1,5 @@
 class Api::V1::CalendarListsController < BaseApiController
-  before_action :authenticate_request, only: [:index]
+  before_action :authenticate_request
 
   def index
     if !@current_user.calendar_list
