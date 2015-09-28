@@ -8,7 +8,6 @@ class CalendarList < ActiveRecord::Base
   private
 
     def sync
-      puts "initial sync"
       client = Google::APIClient.new(
         application_name: "Campfire",
         application_version: "0.0.1"

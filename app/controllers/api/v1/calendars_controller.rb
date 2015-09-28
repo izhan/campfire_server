@@ -13,14 +13,14 @@ class Api::V1::CalendarsController < BaseApiController
   end
 
   private
-    def does_own_calendar?(id)
-      @current_user.calendar_list.calendars.exists?(gcal_id: id)
-    end
-
     # make sure user actually owns the calendar
     def verify_owner(id)
       unless does_own_calendar?(id)
         render json: 'unauthorized calendar access', status: 401
       end
+    end
+
+    def does_own_calendar?(id)
+      @current_user.calendar_list.calendars.exists?(gcal_id: id)
     end
 end

@@ -5,7 +5,9 @@ class Calendar < ActiveRecord::Base
 
   def sync!(access_token)
     if self.sync_token
-      return # TODO resync with server using sync token
+      # in the future, we can continue using this token to
+      # continuously update a user's data
+      return 
     else
       initial_sync(access_token)
     end
@@ -20,7 +22,6 @@ class Calendar < ActiveRecord::Base
 
   private
     def initial_sync(access_token)
-      puts "initial calendar sync"
       client = Google::APIClient.new(
         application_name: "Campfire",
         application_version: "0.0.1"

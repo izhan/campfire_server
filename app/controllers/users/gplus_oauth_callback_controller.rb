@@ -2,10 +2,8 @@ require 'google/api_client/client_secrets'
 
 class Users::GplusOauthCallbackController < ApplicationController
   def callback
-    puts "in callback"
-
     if params[:code]
-      puts params[:code]
+      # ask google for an access_token
       client_secrets = get_api_client()
       authorization = client_secrets.to_authorization
       authorization.scope = 'https://www.googleapis.com/auth/calendar'
@@ -15,6 +13,8 @@ class Users::GplusOauthCallbackController < ApplicationController
 
       access_token = authorization.access_token
 
+      # we verify the integrity of the token.  luckily, this also returns us
+      # some client info too
       token = decode_id_token(authorization.id_token, client_secrets.client_id)
       render json: 'oauth auth failed', status: 401 if not token
 
@@ -32,7 +32,6 @@ class Users::GplusOauthCallbackController < ApplicationController
       # unique to a user (in this case, google plus id)
       jwt = JWT.encode({uid: user.uid, exp: 1.day.from_now.to_i}, Rails.application.secrets.secret_key_base)
       
-      # TODO should dry this up a bit by using a serializer 
       render json: { jwt: jwt, user: user }
     else
       render json: 'oauth auth failed', status: 401
@@ -55,11 +54,12 @@ class Users::GplusOauthCallbackController < ApplicationController
       Google::APIClient::ClientSecrets.new(data)
     end
 
+    # google's official ruby validator & example is horribly outdated.
     # https://github.com/googleplus/gplus-verifytoken-ruby/blob/master/verify.rb
+    # basically a workaround for its various quirks for now
     def decode_id_token(id_token, client_id)
-      # google's official ruby validator & example is horribly outdated
 
-      # TODO must wrap it in this begin rescue because of outdated
+      # must wrap it in this begin rescue because of outdated
       # implementation. i should investigate later and create a PR
       begin 
         validator = GoogleIDToken::Validator.new
@@ -69,8 +69,7 @@ class Users::GplusOauthCallbackController < ApplicationController
 
       return nil if validator.problem
 
-      # TODO hack around existing validator
+      # another hack
       validator.instance_variable_get("@token")[0]
-    end  
-
+    end 
 end
